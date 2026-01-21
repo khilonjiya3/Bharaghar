@@ -1,4 +1,4 @@
-package com.khilonjiya.marketplace
+package com.bharaghar.marketplace
 
 import io.flutter.embedding.android.FlutterActivity
 
