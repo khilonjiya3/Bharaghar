@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.khilonjiya.marketplace">
+    package="com.bharaghar.marketplace">
 
     <!-- Existing permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,7 +22,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:label="khilonjiya.com"
+        android:label="bharaghar"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
