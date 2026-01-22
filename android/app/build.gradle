@@ -5,20 +5,31 @@ plugins {
 }
 
 def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
+def localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
+    localPropertiesFile.withReader("UTF-8") { reader ->
         localProperties.load(reader)
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
-def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
+def flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "1"
+def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
 
 android {
+
     namespace "com.bharaghar.marketplace"
     compileSdk 36
     ndkVersion "26.1.10909125"
+
+    /** 🔐 REQUIRED FOR RELEASE INSTALL (Codemagic) **/
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("CM_KEYSTORE_PATH"))
+            storePassword System.getenv("CM_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("CM_KEY_ALIAS")
+            keyPassword System.getenv("CM_KEY_PASSWORD")
+        }
+    }
 
     defaultConfig {
         applicationId "com.bharaghar.marketplace"
@@ -41,21 +52,35 @@ android {
         jvmTarget = "17"
     }
 
+    /** 🧠 REQUIRED FOR FLUTTER + KOTLIN **/
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release   // ✅ DO NOT REMOVE
             minifyEnabled true
             shrinkResources true
             debuggable false
             proguardFiles getDefaultProguardFile(
-                'proguard-android-optimize.txt'
-            ), 'proguard-rules.pro'
-            // signingConfig defined via key.properties
+                "proguard-android-optimize.txt"
+            ), "proguard-rules.pro"
         }
 
         debug {
             debuggable true
             minifyEnabled false
             shrinkResources false
+        }
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86_64"
+            universalApk true
         }
     }
 
@@ -73,15 +98,6 @@ android {
         }
     }
 
-    splits {
-        abi {
-            enable true
-            reset()
-            include "armeabi-v7a", "arm64-v8a", "x86_64"
-            universalApk true
-        }
-    }
-
     lint {
         checkReleaseBuilds false
         disable "InvalidPackage"
@@ -96,7 +112,6 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.4"
 
-    // lifecycle (safe + compatible)
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.8.4"
     implementation "androidx.lifecycle:lifecycle-process:2.8.4"
 }
