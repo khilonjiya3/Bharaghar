@@ -21,16 +21,6 @@ android {
     compileSdk 36
     ndkVersion "26.1.10909125"
 
-    /** 🔐 REQUIRED FOR RELEASE INSTALL (Codemagic) **/
-    signingConfigs {
-        release {
-            storeFile file(System.getenv("CM_KEYSTORE_PATH"))
-            storePassword System.getenv("CM_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("CM_KEY_ALIAS")
-            keyPassword System.getenv("CM_KEY_PASSWORD")
-        }
-    }
-
     defaultConfig {
         applicationId "com.bharaghar.marketplace"
         minSdk 23
@@ -52,14 +42,13 @@ android {
         jvmTarget = "17"
     }
 
-    /** 🧠 REQUIRED FOR FLUTTER + KOTLIN **/
     sourceSets {
         main.java.srcDirs += "src/main/kotlin"
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release   // ✅ DO NOT REMOVE
+            signingConfig signingConfigs.debug   // 🔑 INSTALLABLE
             minifyEnabled true
             shrinkResources true
             debuggable false
